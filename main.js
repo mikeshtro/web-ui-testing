@@ -1,5 +1,5 @@
 import 'reveal.js/dist/reveal.css';
-import 'reveal.js/dist/theme/black.css';
+import './edhouse.scss';
 
 import Reveal from 'reveal.js';
 
