@@ -10,46 +10,124 @@
     <div class="reveal">
       <div class="slides">
         <section>
-          Hello
+          <h2>Testování webových UI</h2>
         </section>
 
         <section>
-          <section>What this is about</section>
-          <section>Testing with server</section>
-          <section>msw</section>
+          <section>
+            <h3>Manuální testování</h3>
+          </section>
+          <section>
+            <h4>Vývoj webových aplikací se serverm</h4>
+            <p class="fragment fade-in-then-semi-out">Nejprve si nainstaluj tohle všechno</p>
+            <p class="fragment fade-in-then-semi-out">Počkej, až to bude hotové a odladěné na serveru</p>
+            <p class="fragment fade-in-then-semi-out">Potom klikej tak dlouho, dokud server nedostaneš do správného stavu</p>
+            <p class="fragment fade-in-then-semi-out">Tak a teď můžeš začít vyvíjet</p>
+            <p class="fragment fade-in-then-semi-out">A pokud uděláš změnu v databázi, nezapomeň ji zase vrátit do původního stavu</p>
+            <aside class="notes">
+              <p>Když jsem přecházel ze C# na JS, postup byl vždy podobný</p>
+              <p>Tento postup mi přišel neefektivní</p>
+              <p>Navíc vedl k velkým PR</p>
+              <p>Na současném projektu ani nemám možnost nejprve spustit server</p>
+              <p>Dnes si ukážeme některé nástroje, které používám a třeba někoho inspirují</p>
+              <p>Samozřejmě existují i jiné varianty, ukazuji pouze ty, které používám na projektu</p>
+            </aside>
+          </section>
+
+          <section>
+            <img src="js-framework.jpg" />
+          </section>
+
+          <section>
+            <h4>Manuální testování bez serveru</h4>
+            <h5 class="fragment" style="display: flex; gap: 1em; align-items: center; justify-content: center;">
+              <svg width="40" height="40"><image xlink:href="./msw.svg" height="40" /></svg>
+              <span style="white-space: nowrap;">Mock Service Worker</span>
+            </h5>
+            <p class="fragment fade-in-then-semi-out">Je to service worker jako každý jiný</p>
+            <p class="fragment fade-in-then-semi-out">Interceptuje requesty z aplikace</p>
+            <aside class="notes">
+              <p>Na manuálním testování není nic špatného</p>
+              <p>Existují nástroje, které práci zjednodušší</p>
+              <p>Přecházím z json-server na msw</p>
+            </aside>
+            <!-- TODO: Code example getListOfEmployees -->
+          </section>
         </section>
 
         <section>
-          <section>Unit testing</section>
-          <section>Testing without server - unit tests</section>
-          <section>Testing without server - what is a component</section>
+          <section>
+            <h3>Automatické testování</h3>
+          </section>
+          <section>
+            <!-- TODO: image data-access, business-logic, UI -->
+            <img src="c-sharp-test.png" />
+            <!-- TODO: image js test -->
+            <aside class="notes">
+              <p>Komplexnějí webové frontendy mají více vrstev</p>
+              <p>Spodní vrstvy se dají testovat stejně jako na BE</p>
+              <p>Pokud máme rádi integrační testy můžeme msw použít i k automatickému testování</p>
+            </aside>
+          </section>
+          <section>
+            <!-- TODO: Code example? getEmployeesByDepartement -->
+          </section>
+          <section>
+            <!-- TODO: image - unit test pass -->
+          </section>
         </section>
 
         <section>
-          <section>Basic testing-library test</section>
-          <section>How basic test look like</section>
-          <section>Component with business logic</section>
-          <section>Component state service</section>
-          <section>Component with msw</section>
+          <section>
+            <h3>Automatické testování komponent</h3>
+          </section>
+          <section>
+            <h5 style="display: flex; gap: 1em; align-items: center; justify-content: center;">
+              <svg width="40" height="40"><image xlink:href="./testing-library.png" height="40" /></svg>
+              <span style="white-space: nowrap;">Testing Library</span>
+            </h5>
+            <!-- TODO Code example basic testing-library test -->
+          </section>
+          <section>
+            <!-- TODO Code example component find empolyee by departement -->
+          </section>
+          <section>
+            <!-- TODO Code exmaple component state service -->
+          </section>
+          <section>
+            <!-- TODO Code exmaple component without state service -->
+          </section>
         </section>
 
         <section>
-          <section>Storybook</section>
-          <section>Manual storybook</section>
-          <section>Storybook play function</section>
+          <section>
+            <h3>Visuální testování</h3>
+          </section>
+          <section>
+            <h5 style="display: flex; gap: 1em; align-items: center; justify-content: center;">
+              <svg width="40" height="40"><image xlink:href="./storybook.png" height="40" /></svg>
+              <span style="white-space: nowrap;">Storybook</span>
+            </h5>
+            <!-- TODO code and preview filter list component -->
+          </section>
+          <section>
+            <!-- TODO code and preview filter list component play function -->
+          </section>
+          <section>
+            <h5 style="display: flex; gap: 1em; align-items: center; justify-content: center;">
+              <svg width="40" height="40"><image xlink:href="./cypress.png" height="40" /></svg>
+              <span style="white-space: nowrap;">Cypress</span>
+            </h5>
+            <!-- TODO code and preview filter list component -->
+          </section>
         </section>
 
         <section>
-          <section>Component testing</section>
-          <section>Cypress component test</section>
-        </section>
-
-        <section>
-          Wrap up
-        </section>
-
-        <section>
-          Thank you
+          <h2>Děkuji za pozornost</h2>
+          <a style="display: flex; align-items: center; gap: 1em" href="https://github.com/mikeshtro/web-ui-testing">
+            <img width="40" height="40" src="github.png" />
+            <span>https://github.com/mikeshtro/web-ui-testing</span>
+          </a>
         </section>
       </div>
     </div>
