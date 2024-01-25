@@ -10,32 +10,12 @@
     <div class="reveal">
       <div class="slides">
         <section>
-          <h2>Testování webových UI</h2>
+          <h2>Jak začít s testováním webových UI</h2>
         </section>
 
         <section>
           <section>
             <h3>Manuální testování</h3>
-          </section>
-          <section>
-            <h4>Vývoj webových aplikací se serverm</h4>
-            <p class="fragment fade-in-then-semi-out">Nejprve si nainstaluj tohle všechno</p>
-            <p class="fragment fade-in-then-semi-out">Počkej, až to bude hotové a odladěné na serveru</p>
-            <p class="fragment fade-in-then-semi-out">Potom klikej tak dlouho, dokud server nedostaneš do správného stavu</p>
-            <p class="fragment fade-in-then-semi-out">Tak a teď můžeš začít vyvíjet</p>
-            <p class="fragment fade-in-then-semi-out">A pokud uděláš změnu v databázi, nezapomeň ji zase vrátit do původního stavu</p>
-            <aside class="notes">
-              <p>Když jsem přecházel ze C# na JS, postup byl vždy podobný</p>
-              <p>Tento postup mi přišel neefektivní</p>
-              <p>Navíc vedl k velkým PR</p>
-              <p>Na současném projektu ani nemám možnost nejprve spustit server</p>
-              <p>Dnes si ukážeme některé nástroje, které používám a třeba někoho inspirují</p>
-              <p>Samozřejmě existují i jiné varianty, ukazuji pouze ty, které používám na projektu</p>
-            </aside>
-          </section>
-
-          <section>
-            <img src="js-framework.jpg" />
           </section>
 
           <section>
@@ -51,51 +31,205 @@
               <p>Existují nástroje, které práci zjednodušší</p>
               <p>Přecházím z json-server na msw</p>
             </aside>
-            <!-- TODO: Code example getListOfEmployees -->
+            <pre class="fragment">
+              <code data-line-numbers="4-19|21-30">
+import {http, HttpResponse} from 'msw';
+import { EmployeeDto }  from './app/employee.dto';
+
+const employees: EmployeeDto[] = [
+  {
+    id: 'id-1',
+    firstName: 'Leland',
+    lastName: 'Holder',
+    brithDate: '1964-02-03T00:00:00.000Z',
+    departmentId: 1,
+  },
+  {
+    id: 'id-2',
+    firstName: 'James',
+    lastName: 'Freeman',
+    brithDate: '1989-03-12T00:00:00.000Z',
+    departmentId: 2,
+  },
+]
+
+export const handlers = [
+  http.get('employees', ({ request }) => {
+    const url = new URL(request.url);
+    const department = url.searchParams.get('department');
+    return HttpResponse.json(
+      employees.filter(
+        employee => department == null || employee.departmentId.toString() === department)
+    );
+  }),
+];
+              </code>
+            </pre>
           </section>
         </section>
 
         <section>
           <section>
-            <h3>Automatické testování</h3>
+            <h3>Automatizované testování</h3>
           </section>
           <section>
-            <!-- TODO: image data-access, business-logic, UI -->
             <img src="c-sharp-test.png" />
-            <!-- TODO: image js test -->
             <aside class="notes">
               <p>Komplexnějí webové frontendy mají více vrstev</p>
               <p>Spodní vrstvy se dají testovat stejně jako na BE</p>
               <p>Pokud máme rádi integrační testy můžeme msw použít i k automatickému testování</p>
             </aside>
           </section>
-          <section>
-            <!-- TODO: Code example? getEmployeesByDepartement -->
-          </section>
-          <section>
-            <!-- TODO: image - unit test pass -->
-          </section>
         </section>
 
         <section>
           <section>
-            <h3>Automatické testování komponent</h3>
+            <h3>Automatizované testování komponent</h3>
           </section>
           <section>
             <h5 style="display: flex; gap: 1em; align-items: center; justify-content: center;">
               <svg width="40" height="40"><image xlink:href="./testing-library.png" height="40" /></svg>
               <span style="white-space: nowrap;">Testing Library</span>
             </h5>
-            <!-- TODO Code example basic testing-library test -->
+            <pre class="fragment">
+              <code>
+@Component({
+  selector: 'counter',
+  template: `
+    <button (click)="decrement()">-</button>
+    <span data-testid="count">Current Count: {{ counter }}</span>
+    <button (click)="increment()">+</button>
+  `,
+})
+export class CounterComponent {
+  @Input() counter = 0
+
+  increment() {
+    this.counter += 1
+  }
+
+  decrement() {
+    this.counter -= 1
+  }
+}
+              </code>
+            </pre>
           </section>
           <section>
-            <!-- TODO Code example component find empolyee by departement -->
+            <h5 style="display: flex; gap: 1em; align-items: center; justify-content: center;">
+              <svg width="40" height="40"><image xlink:href="./testing-library.png" height="40" /></svg>
+              <span style="white-space: nowrap;">Testing Library</span>
+            </h5>
+            <pre>
+              <code>
+import {render, screen, fireEvent} from '@testing-library/angular'
+import {CounterComponent} from './counter.component.ts'
+
+describe('Counter', () => {
+  test('should render counter', async () => {
+    await render(CounterComponent, {
+      componentProperties: {counter: 5},
+    })
+
+    expect(screen.getByText('Current Count: 5')).toBeInTheDocument()
+  })
+
+  test('should increment the counter on click', async () => {
+    await render(CounterComponent, {
+      componentProperties: {counter: 5},
+    })
+
+    fireEvent.click(screen.getByText('+'))
+
+    expect(screen.getByText('Current Count: 6')).toBeInTheDocument()
+  })
+})
+              </code>
+            </pre>
           </section>
           <section>
-            <!-- TODO Code exmaple component state service -->
+            <pre>
+              <code data-line-numbers="9|11|13|15-27">
+@Component({
+  standalone: true,
+  imports: [FormsModule],
+  selector: 'org-employee-list',
+  templateUrl: './employee-list.component.html',
+})
+export class EmployeeListComponent {
+  private readonly employeeService = inject(EmployeeService);
+
+  public departmentId = input<number>();
+
+  protected readonly employeeFilter = signal('');
+
+  private readonly loadedEmployees = toSignal(
+    toObservable(this.departmentId).pipe(
+      switchMap(departmentId =>
+        this.employeeService.getEmployeesByDepartment(departmentId)
+      )
+    )
+  );
+
+  protected readonly filteredEmployees = computed(() =>
+    this.loadedEmployees()?.filter((employee) =>
+      employee.fullName.includes(this.employeeFilter())
+    )
+  );
+
+  protected filterEmployees(filter: string): void {
+    this.employeeFilter.set(filter);
+  }
+}
+              </code>
+            </pre>
           </section>
           <section>
-            <!-- TODO Code exmaple component without state service -->
+            <pre>
+              <code>
+<input
+  type="text"
+  [ngModel]="employeeFilter()"
+  (ngModelChange)="filterEmployees($event)"
+/>
+
+@for (employee of filteredEmployees(); track employee.id) {
+  <div>
+    <span>{{ employee.fullName }}</span>
+    <span>{{ employee.age }}</span>
+  </div>
+}
+              </code>
+            </pre>
+          </section>
+          <section>
+            <pre>
+              <code data-line-numbers="2|9|17-23">
+const server = setupServer(...handlers);
+
+describe('EmployeeListComponent', () => {
+  beforeAll(() => server.listen());
+
+  beforeEach(async () => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient()],
+    });
+  });
+
+  afterEach(() => server.resetHandlers());
+
+  afterAll(() => server.close());
+
+  it(`should return employees by department`, async () => {
+    await render(TestEmployeeListComponent, {
+      componentProperties: {departmentId: 1},
+    })
+
+    expect(screen.getByText('Lealand Holder')).toBeInTheDocument();
+  });
+});
+              </code>
+            </pre>
           </section>
         </section>
 
@@ -104,21 +238,18 @@
             <h3>Visuální testování</h3>
           </section>
           <section>
-            <h5 style="display: flex; gap: 1em; align-items: center; justify-content: center;">
+            <h5 class="fragment" style="display: flex; gap: 1em; align-items: center; justify-content: center;">
               <svg width="40" height="40"><image xlink:href="./storybook.png" height="40" /></svg>
               <span style="white-space: nowrap;">Storybook</span>
             </h5>
-            <!-- TODO code and preview filter list component -->
-          </section>
-          <section>
-            <!-- TODO code and preview filter list component play function -->
-          </section>
-          <section>
-            <h5 style="display: flex; gap: 1em; align-items: center; justify-content: center;">
-              <svg width="40" height="40"><image xlink:href="./cypress.png" height="40" /></svg>
+            <h5 class="fragment" style="display: flex; gap: 1em; align-items: center; justify-content: center;">
+              <svg width="40" height="40"><image xlink:href="./cypress.jpeg" height="40" /></svg>
               <span style="white-space: nowrap;">Cypress</span>
             </h5>
-            <!-- TODO code and preview filter list component -->
+            <h5 class="fragment" style="display: flex; gap: 1em; align-items: center; justify-content: center;">
+              <svg width="60" height="40"><image xlink:href="./playwright.png" height="40" /></svg>
+              <span style="white-space: nowrap;">Playwright</span>
+            </h5>
           </section>
         </section>
 
